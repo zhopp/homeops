@@ -29,6 +29,8 @@ spec:
     cephClusterSpec:
       network:
         provider: host
+        connections:
+          requireMsgr2: true
       mgr:
         modules:
           - name: rook
