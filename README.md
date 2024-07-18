@@ -70,6 +70,7 @@ After you have configured your talconfig, generate your configurations
 talhelper genconfig
 ```
 
+If this is your first time installing Talos, follow the below steps:
 download the ISO that matches your talconfig setings:
 ```sh
 talhelper genurl iso | xargs wget -P ~/Downloads
@@ -109,33 +110,13 @@ kubectl run \
 
 ## Installing apps
 
-Apps are added via the the `apps` directory. The "core" apps will be deployed via DoD P1's big-bang offering (https://repo1.dso.mil/big-bang/bigbang):
-
-This is a helm chart of charts that deploys applications and services in an opinonaited way, with a general focus of security and sensible secure defaults.
-
-The flux configuration files will be grabbed from the Big Bang repo as well (https://repo1.dso.mil/big-bang/bigbang/-/tree/2.31.0/base/flux?ref_type=tags).
+Follow the README located [here](./k8s/bootstrap/README.md)
 
 ## Updates
 
 if you need to make a change to your talos config run `talhelper genconfig` to generate a
 new config with your added changes then run `apply.sh` to apply them
 
-## Shutdown
-`tctl shutdown -n X.X.X.X --force`
+## Resetting your nodes
 
-### Connecting to remote clusters on tailscale
-
-You have genereated the `talosconfig` file in the `clusterconfig` directory above. You will need to update the endpoint and the node config via a couple commands to match the talos hostname that will be availabe via the tailscale network:
-
-```sh
-talosctl config node $CLUSTER_NAME
-talosctl config endpoint $CLUSTER_NAME
-```
-
-After that, generate your kubeconfig which will automatically update your context:
-
-```sh
-talosctl kubeconfig
-```
-
-Once you have done that, you can connect to the cluster via any typical way (k9s, etc)
+Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from `Create Talos Secrets` onward.

@@ -9,7 +9,7 @@ rm cni/values.yaml
 rm -rf cni/charts
 
 rm -rf kubelet-csr-approver/charts
-envsubst < ../../apps/kube-system/kubelet-csr-approver/values.yaml > kubelet-csr-approver/values.yaml
+envsubst < ../../apps/kube-system/kubelet-csr-approver/app/values.yaml > kubelet-csr-approver/values.yaml
 kustomize build --enable-helm kubelet-csr-approver | kubectl apply -f -
 rm kubelet-csr-approver/values.yaml
 rm -rf kubelet-csr-approver/charts
