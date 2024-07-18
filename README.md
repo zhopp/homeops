@@ -88,24 +88,12 @@ Boot from USB and Talos will install on the device
 ./bootstrap.sh
 ```
 
-Once this is complete, run a `k apply -k ./` at the top level to deploy your applications and to have flux take over control of the resources in the system directory
 
-If you're connecting to the tailscale network:
+If you're enabling the tailscale extension and are not using the authkey:
 
 Ensure you grab the tailscale login url:
 ```
 talosctl -n 192.168.4.10 logs ext-tailscale
-```
-
-If you have an Nvidia GPU, you can run this to test if the NVIDIA drivers are working:
-```sh
-kubectl run \
-  nvidia-test \
-  --restart=Never \
-  -ti --rm \
-  --image nvcr.io/nvidia/cuda:12.1.0-base-ubuntu22.04 \
-  --overrides '{"spec": {"runtimeClassName": "nvidia"}}' \
-  nvidia-smi
 ```
 
 ## Installing apps
