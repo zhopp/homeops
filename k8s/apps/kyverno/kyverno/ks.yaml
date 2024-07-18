@@ -29,7 +29,7 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: kyverno
-  path: ./k8s/apps/policy/kyverno/policies
+  path: ./k8s/apps/kyverno/kyverno/policies
   prune: true
   sourceRef:
     kind: GitRepository
