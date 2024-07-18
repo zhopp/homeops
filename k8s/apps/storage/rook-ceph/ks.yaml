@@ -37,4 +37,4 @@ spec:
   postBuild:
     substituteFrom: []
   dependsOn:
-    - name: cluster-apps-rook-ceph
+    - name: cluster-apps-rook-ceph-operator
