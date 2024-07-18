@@ -127,3 +127,5 @@ EOF
 kubectl -n storage wait --timeout=900s --for=jsonpath='{.status.phase}=Succeeded' pod disk-wipe-001 disk-wipe-002 disk-wipe-003
 kubectl -n storage delete pod disk-wipe-001 disk-wipe-002 disk-wipe-003
 ```
+
+You will likely need to delete certain CRDs before being able to completely unistall the helm release. If the helm release fails to delete, describe the helm release to see the CRDs that need to be deleted. Delete these and ensure you remove any finalizers as required.

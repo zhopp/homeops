@@ -43,31 +43,33 @@ creation_rules:
         - YOUR_PUBLIC_AGE_KEY
 ```
 
-## Create Env File (optional)
+### Create Env File (optional)
 An optional env file can be created to store variables that can be subsituted in
 the talconfig.yaml on manifest generation
 
 If these envs are secret, ensure that they are encrypted via SOPS:
 
-```
+```sh
 touch talenv.sops.yaml
 sops -e -i talenv.sops.yaml
 ```
 
-Make sure direnv is installed, and that you run a direnv allow to enable the env vars to be loaded when entering the directory in your shell
+Make sure direnv is installed, and that you run a direnv allow to enable the env vars to be loaded when entering the directory in your shell.
 
-## Create Talos Secrets
+### Create Talos Secrets
 
-Per cluster, only run gensecret once **Ensure that each cluster has it's own secret, failure to do so may result in nodes attempting to join other clusters.**
+Per cluster, only run gensecret once!
 
-```
+**Ensure that each cluster has it's own secret, failure to do so may result in nodes attempting to join other clusters.**
+
+```sh
 talhelper gensecret > talsecret.sops.yaml
 sops -e -i talsecret.sops.yaml
 ```
 
-**Generating secrets will overwrite all of the keys and there's no way to recover from it. This will brick the cluster**
+**Generating secrets will overwrite all of the keys and there's no way to recover from it. This will brick the cluster unless you have some sort of backup**
 
-## Create Talos Config
+### Create Talos Config
 create a talconfig.yaml file following the documentation at https://budimanjojo.github.io/talhelper/latest/
 
 After you have configured your talconfig, generate your configurations
@@ -78,39 +80,43 @@ talhelper genconfig
 
 If this is your first time installing Talos, follow the below steps:
 download the ISO that matches your talconfig setings:
+
 ```sh
 talhelper genurl iso | xargs wget -P ~/Downloads
 ```
 
-Flash a usb stick with that ISO image. This will be used to install Talos on the bare metal machine
-Boot from USB and Talos will install on the device
+Flash a usb stick with that ISO image. This will be used to install Talos on the bare metal machine.
+Boot from USB and Talos will install on the device into maintenance mode.
 
-## Boostrap
+### Boostrap
 * load the Talos image onto a usb and boot your device from it
 * either statically set ip addresses or use DHCP reservations to obtain
   an IP address
 * Run bootstrap script, this configures the nodes, bootstraps the nodes, and runs the `deploy-integrations.sh` script that installs the Cilium and the CSR approver
-```
+
+```sh
 ./bootstrap.sh
 ```
 
+If you're enabling the tailscale extension and are not using a pre-defined authkey:
 
-If you're enabling the tailscale extension and are not using the authkey:
+* Grab the tailscale login url:
 
-Ensure you grab the tailscale login url:
+```sh
+talosctl -n YOUR_NODE_IP logs ext-tailscale
 ```
-talosctl -n 192.168.4.10 logs ext-tailscale
-```
 
-## Installing apps
+### Installing apps
 
-Follow the README located [here](./k8s/bootstrap/README.md)
+Follow the README located [here](./k8s/bootstrap/README.md). Flux is used to install all apps and will take ownership of the Cilium and CSR deployment that was done during the bootstrap.
 
-## Updates
+### Updates
 
 if you need to make a change to your talos config run `talhelper genconfig` to generate a
 new config with your added changes then run `apply.sh` to apply them
 
-## Resetting your nodes
+### Resetting your nodes
 
-Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from []"Create Talos Secrets"](https://github.com/zhopp/homeops?tab=readme-ov-file#create-talos-secrets) onward.
+Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from ["Create Talos Secrets"](https://github.com/zhopp/homeops?tab=readme-ov-file#create-talos-secrets) onward.
+
+To wipe your Ceph cluster, follow the README steps [here](./k8s/apps/storage/rook-ceph/README.md)
