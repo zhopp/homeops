@@ -1,0 +1,220 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+clusterName: ${CLUSTER_NAME}
+talosVersion: v1.7.5
+kubernetesVersion: 1.30.0
+endpoint: "https://${CLUSTER_NAME}:6443"
+allowSchedulingOnControlPlanes: true
+allowSchedulingOnMasters: true
+
+clusterPodNets:
+  - 172.22.0.0/16
+clusterSvcNets:
+  - 172.23.0.0/16
+
+cniConfig:
+  name: none
+
+additionalApiServerCertSans: &san
+  - ${CLUSTER_ENDPOINT_IP}
+  - "127.0.0.1" # KubePrism
+  - ${CLUSTER_NAME}
+  - ${TS_HOSTNAME_001}
+  - ${TS_HOSTNAME_002}
+  - ${TS_HOSTNAME_003}
+additionalMachineCertSans: *san
+
+nodes:
+  # x3 HP Elite Desk 705 G4 / AMD Ryzen 5 PRO 2400G / 16GB DDR4 / 256GB SSD / 256GB Nvme
+  - hostname: zhopp-001
+    controlPlane: true
+    ipAddress: 192.168.4.12
+    installDisk: /dev/sda
+    # m.2: /dev/nvme0n1
+    disableSearchDomain: true
+    networkInterfaces:
+      - interface: eno1
+        dhcp: true
+        vip:
+          ip: ${CLUSTER_ENDPOINT_IP}
+    nodeLabels:
+      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
+    # extensionServices:
+    #   - name: tailscale
+    #     environment:
+    #       - TS_AUTH_ONCE=true
+    #       - TS_AUTH_KEY=${TS_AUTHKEY}
+    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    patches:
+      - |-
+        - op: add
+          path: /machine/sysctls
+          value:
+            net.core.bpf_jit_harden: 1
+  - hostname: zhopp-002
+    controlPlane: true
+    ipAddress: 192.168.4.13
+    installDisk: /dev/sda
+    # m.2: /dev/nvme0n1
+    disableSearchDomain: true
+    networkInterfaces:
+      - interface: eno1
+        dhcp: true
+        vip:
+          ip: ${CLUSTER_ENDPOINT_IP}
+    nodeLabels:
+      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
+    # extensionServices:
+    #   - name: tailscale
+    #     environment:
+    #       - TS_AUTH_ONCE=true
+    #       - TS_AUTH_KEY=${TS_AUTHKEY}
+    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    patches:
+      - |-
+        - op: add
+          path: /machine/sysctls
+          value:
+            net.core.bpf_jit_harden: 1
+  - hostname: zhopp-003
+    controlPlane: true
+    ipAddress: 192.168.4.14
+    installDisk: /dev/sda
+    # m.2: /dev/nvme0n1
+    disableSearchDomain: true
+    networkInterfaces:
+      - interface: eno1
+        dhcp: true
+        vip:
+          ip: ${CLUSTER_ENDPOINT_IP}
+    nodeLabels:
+      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
+    # extensionServices:
+    #   - name: tailscale
+    #     environment:
+    #       - TS_AUTH_ONCE=true
+    #       - TS_AUTH_KEY=${TS_AUTHKEY}
+    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    patches:
+      - |-
+        - op: add
+          path: /machine/sysctls
+          value:
+            net.core.bpf_jit_harden: 1
+
+controlPlane:
+  schematic:
+    customization:
+      extraKernelArgs:
+        - net.ifnames=0,
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/amdgpu-firmware
+          - siderolabs/amd-ucode
+          # - siderolabs/tailscale
+  patches:
+    # Configure containerd
+    - |-
+      machine:
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |-
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+              [plugins."io.containerd.grpc.v1.cri".containerd]
+                discard_unpacked_layers = false
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                discard_unpacked_layers = false
+
+    # Disable search domain everywhere
+    - |-
+      machine:
+        network:
+          disableSearchDomain: true
+
+    # Configure kubelet
+    - |-
+      machine:
+        kubelet:
+          extraArgs:
+            feature-gates: GracefulNodeShutdown=true
+            rotate-server-certificates: true
+          extraConfig:
+            maxPods: 250
+          nodeIP:
+            validSubnets:
+              - 192.168.4.0/22
+
+    # Enable KubePrism
+    - |-
+      machine:
+        features:
+          kubePrism:
+            enabled: true
+            port: 7445
+
+    # Enable Shared DNS cache with node
+    - |-
+      machine:
+        features:
+          hostDNS:
+            enabled: true
+            forwardKubeDNSToHost: false
+
+    # Static host entries
+    - |-
+      machine:
+        network:
+          extraHostEntries:
+            - ip: ${CLUSTER_ENDPOINT_IP}
+              aliases:
+                - ${CLUSTER_NAME}
+
+    # Custom sysctl settings
+    - |-
+      machine:
+        sysctls:
+          fs.inotify.max_user_watches: 1048576
+          fs.inotify.max_user_instances: 8192
+
+    # Cluster configuration
+    - |-
+      cluster:
+        allowSchedulingOnMasters: true
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        proxy:
+          disabled: true
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
+
+    # ETCD configuration
+    - |-
+      cluster:
+        etcd:
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
+          advertisedSubnets:
+            - 192.168.4.0/22
+
+    # Disable default API server admission plugins.
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+    # Enable K8s Talos API Access
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - system

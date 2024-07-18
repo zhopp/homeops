@@ -1,0 +1,9 @@
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: volsync-bucket
+  # may need to move to flux-system namespace
+spec:
+  bucketName: volsync
+  storageClassName: ceph-bucket

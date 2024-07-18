@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - cloudnative-pg.yaml
+  - rook-ceph.yaml
+  - spegel.yaml
+  - cilium.yaml
+  - postfinance.yaml
+  - kubernetes-sigs-metrics-server.yaml
+  - prometheus-community.yaml
+  - backube.yaml
+  - piraeus.yaml
+  - kyverno.yaml
+  - stakater.yaml
+  - emberstack.yaml
+  - bjw-s.yaml

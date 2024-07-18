@@ -1,0 +1,12 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings
+  namespace: flux-system
+data:
+  CLUSTER_NAME: zhopp-k8s
+  CLUSTER_APISERVER_ENDPOINT: 192.168.4.10
+  TIMEZONE: America/New_York
+  POD_CIDR: 172.22.0.0/16
+  SERVICE_CIDR: 172.23.0.0/16

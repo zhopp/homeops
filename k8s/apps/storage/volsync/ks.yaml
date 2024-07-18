@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-volsync
+  namespace: flux-system
+spec:
+  targetNamespace: storage
+  path: "./k8s/apps/storage/volsync/app"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: zhopp-k8s
+  wait: true
+  interval: 30m
+  timeout: 5m
+  retryInterval: 1m
+  postBuild:
+    substituteFrom: []
+  dependsOn:
+    - name: cluster-apps-snapshot-controller
+    - name: cluster-apps-rook-ceph-cluster
