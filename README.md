@@ -3,7 +3,7 @@
 ## Installation/Configuration Instructions
 ### Prequisites
 
-* You will need the following tools installed:
+You will need the following tools installed:
   - sops
   - direnv
   - talhelper
@@ -12,25 +12,31 @@
   - kustomize
   - helm
 
-* You also need sops to be configured with your preferred encryption tool (age, pgp, etc).
-### example install
+You also need sops to be configured with your preferred encryption tool (age, kms, etc).
+
+#### Example install
 ```sh
      brew install sops talhelper siderolabs/talos/talosctl kustomize kubectl helm
 ```
 
-## SOPS using age
-### Quick start
+### SOPS using age
+
 ```sh
      mkdir -p ~/.config/sops/age
      age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
-Ensure `direnv allow` has been ran in your directory, and ensure `export SOPS_AGE_RECIPIENTS="$HOME/.config/sops/age/keys.txt"` is in your .envrc file
+Ensure `direnv allow` has been ran in the root repo directory, and ensure `export SOPS_AGE_RECIPIENTS="$HOME/.config/sops/age/keys.txt"` is in your `.envrc` file in the root of the repo.
 
 Configure your `.sops.yaml` with your age public key as such:
 
 ```yaml
 creation_rules:
+   - path_regex: secret-.*\.sops\.ya?ml
+    encrypted_regex: "^(data|stringData)$"
+    key_groups:
+      - age:
+        - YOUR_PUBLIC_AGE_KEY
   - path_regex: .*\.sops\.yaml
     key_groups:
       - age:
@@ -38,10 +44,10 @@ creation_rules:
 ```
 
 ## Create Env File (optional)
-an optional env file can be created to store variables that can be subsituted in
+An optional env file can be created to store variables that can be subsituted in
 the talconfig.yaml on manifest generation
 
-If these envs are secret, ensure that they are encrypted via SOPS
+If these envs are secret, ensure that they are encrypted via SOPS:
 
 ```
 touch talenv.sops.yaml
@@ -52,14 +58,14 @@ Make sure direnv is installed, and that you run a direnv allow to enable the env
 
 ## Create Talos Secrets
 
-Per cluster, only run gensecret once.
+Per cluster, only run gensecret once **Ensure that each cluster has it's own secret, failure to do so may result in nodes attempting to join other clusters.**
 
 ```
 talhelper gensecret > talsecret.sops.yaml
 sops -e -i talsecret.sops.yaml
 ```
 
-*Generating secrets will overwrite all of the keys and there's no way to recover from it. This will brick the cluster*
+**Generating secrets will overwrite all of the keys and there's no way to recover from it. This will brick the cluster**
 
 ## Create Talos Config
 create a talconfig.yaml file following the documentation at https://budimanjojo.github.io/talhelper/latest/
@@ -107,4 +113,4 @@ new config with your added changes then run `apply.sh` to apply them
 
 ## Resetting your nodes
 
-Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from `Create Talos Secrets` onward.
+Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from []"Create Talos Secrets"](https://github.com/zhopp/homeops?tab=readme-ov-file#create-talos-secrets) onward.
