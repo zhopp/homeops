@@ -119,4 +119,4 @@ new config with your added changes then run `apply.sh` to apply them
 
 Reboot your nodes, and interrupt the boot squence to set the nodes into maintenance mode. After that, follow the steps from ["Create Talos Secrets"](https://github.com/zhopp/homeops?tab=readme-ov-file#create-talos-secrets) onward.
 
-To wipe your Ceph cluster, follow the README steps [here](./k8s/apps/storage/rook-ceph/README.md)
+To wipe your Ceph cluster, follow the README steps [here](./k8s/apps/storage/README.md)
