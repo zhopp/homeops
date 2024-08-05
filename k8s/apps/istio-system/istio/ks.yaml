@@ -38,4 +38,4 @@ spec:
   retryInterval: 1m
   timeout: 5m
   dependsOn:
-    - cluster-apps-istio-base
+    - name: cluster-apps-istio-base
