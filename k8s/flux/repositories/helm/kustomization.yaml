@@ -17,3 +17,4 @@ resources:
   - emberstack.yaml
   - bjw-s.yaml
   - istio.yaml
+  - cnpg.yaml

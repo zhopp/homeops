@@ -21,3 +21,4 @@ spec:
   dependsOn:
     - name: cluster-apps-snapshot-controller
     - name: cluster-apps-rook-ceph-cluster
+    - name: cluster-apps-istiod

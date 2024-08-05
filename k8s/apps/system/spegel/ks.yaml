@@ -20,3 +20,4 @@ spec:
     substituteFrom: []
   dependsOn:
     - name: cluster-apps-kube-prometheus-stack-crds
+    - name: cluster-apps-istiod
