@@ -7,7 +7,7 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: istio/istiod
+      chart: istiod
       version: 1.22.3
       sourceRef:
         kind: HelmRepository
