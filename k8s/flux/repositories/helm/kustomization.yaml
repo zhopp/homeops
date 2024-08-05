@@ -16,3 +16,4 @@ resources:
   - stakater.yaml
   - emberstack.yaml
   - bjw-s.yaml
+  - istio.yaml
