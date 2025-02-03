@@ -11,6 +11,7 @@ You will need the following tools installed:
   - kubectl
   - kustomize
   - helm
+  - task
 
 You also need sops to be configured with your preferred encryption tool (age, kms, etc).
 
@@ -55,6 +56,10 @@ sops -e -i talenv.sops.yaml
 ```
 
 Make sure direnv is installed, and that you run a direnv allow to enable the env vars to be loaded when entering the directory in your shell.
+
+## WIP ##
+
+*Updating to use Taskfile for easier configuration, instructions may be out of date*
 
 ### Create Talos Secrets
 
