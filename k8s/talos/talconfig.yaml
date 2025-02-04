@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 clusterName: ${CLUSTER_NAME}
 talosVersion: v1.7.5
-kubernetesVersion: 1.30.0
+kubernetesVersion: 1.31.0
 endpoint: "https://${CLUSTER_NAME}:6443"
 allowSchedulingOnControlPlanes: true
 allowSchedulingOnMasters: true
@@ -18,9 +18,6 @@ additionalApiServerCertSans: &san
   - ${CLUSTER_ENDPOINT_IP}
   - "127.0.0.1" # KubePrism
   - ${CLUSTER_NAME}
-  - ${TS_HOSTNAME_001}
-  - ${TS_HOSTNAME_002}
-  - ${TS_HOSTNAME_003}
 additionalMachineCertSans: *san
 
 nodes:

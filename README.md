@@ -60,6 +60,10 @@ Make sure direnv is installed, and that you run a direnv allow to enable the env
 ## WIP ##
 
 *Updating to use Taskfile for easier configuration, instructions may be out of date*
+TODO:
+
+GCP KMS for sops
+Add additional tasks to taskfile, validate tasks
 
 ### Create Talos Secrets
 
