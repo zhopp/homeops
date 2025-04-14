@@ -1,0 +1,99 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+env:
+  TALSECRET_FILE: '{{ .CLUSTER_DIR }}/talos/talsecret.sops.yaml'
+  TALCONFIG_FILE: '{{ .CLUSTER_DIR }}/talos/talconfig.yaml'
+  TAL_OUT_DIR: '{{ .CLUSTER_DIR }}/talos/clusterconfig'
+  TALENV_FILE: '{{ .CLUSTER_DIR }}/talos/talenv.yaml'
+
+tasks:
+  initial-install:
+    desc: Command when installing Talos on bare metal nodes for the first time
+    deps:
+      - task: _generate-secrets
+    cmds:
+      - task talos:generate-config
+      - task talos:apply-config INSECURE="true"
+      - task talos:generate-kubeconfig
+
+  _generate-secrets:
+    desc: Create secrets for talos. Only run once per cluster, when first installing Talos.
+    internal: true
+    preconditions:
+      - which talhelper test sops
+      - test -f {{ .SOPS_AGE_KEY_FILE }}
+      - test -f {{ .SOPS_CONFIG }}
+    requires:
+      vars:
+        - CLUSTER
+        - CLUSTER_DIR
+        - SOPS_AGE_KEY_FILE
+        - SOPS_CONFIG
+    cmds:
+      - talhelper gensecret > {{ .TALSECRET_FILE }}
+      - touch {{ .TALENV_FILE }}
+      - sops -e -i {{ .TALSECRET_FILE }}
+
+  generate-config:
+    desc: Generate clusterconfig for Talos
+    aliases:
+      - generate
+    preconditions:
+      - which test talhelper
+      - test -f {{ .TALSECRET_FILE }}
+      - test -f {{ .TALCONFIG_FILE }}
+      - test -f {{ .TALENV_FILE }}
+    requires:
+      vars:
+        - CLUSTER
+        - CLUSTER_DIR
+    cmds:
+      - talhelper genconfig
+        --secret-file {{ .TALSECRET_FILE }}
+        --config-file {{ .TALCONFIG_FILE }}
+        --env-file {{ .TALENV_FILE }}
+        --out-dir {{ .TAL_OUT_DIR }}
+
+  apply-config:
+    desc: Apply clusterconfig for a Talos cluster
+    aliases:
+      - apply
+    preconditions:
+      - which talosctl test talhelper
+      - test -f "${TALOSCONFIG}"
+    requires:
+      vars:
+        - CLUSTER
+        - CLUSTER_DIR
+    vars:
+      MODE: '{{ .MODE | default "auto" }}'
+      INSECURE: '{{ .INSECURE | default "false" }}'
+    cmds:
+      - talhelper gencommand apply
+        --config-file {{ .TALCONFIG_FILE }}
+        --env-file {{ .TALENV_FILE }}
+        --out-dir {{ .TAL_OUT_DIR }}
+        {{ if .NODE }}--node {{ .NODE }} {{ end }}
+        --extra-flags --mode={{ .MODE | default "auto" }}
+        {{- if eq .INSECURE "true" }},--insecure{{ end }}
+        | bash
+
+  generate-kubeconfig:
+    desc: Generate the kubeconfig for the cluster
+    preconditions:
+      - which talosctl test
+      - test -f "${TALOSCONFIG}"
+    requires:
+      vars:
+        - CLUSTER
+        - CLUSTER_DIR
+        - TALOSCONFIG
+    cmds:
+      - talhelper gencommand kubeconfig
+        --config-file {{ .TALCONFIG_FILE }}
+        --env-file {{ .TALENV_FILE }}
+        --out-dir {{ .TAL_OUT_DIR }}
+        --extra-flags --force
+        | bash

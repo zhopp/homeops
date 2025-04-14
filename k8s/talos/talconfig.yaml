@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 clusterName: ${CLUSTER_NAME}
-talosVersion: v1.7.5
-kubernetesVersion: 1.31.0
+talosVersion: v1.9.5
+kubernetesVersion: 1.32.0
 endpoint: "https://${CLUSTER_NAME}:6443"
 allowSchedulingOnControlPlanes: true
 allowSchedulingOnMasters: true
@@ -33,15 +33,9 @@ nodes:
         dhcp: true
         vip:
           ip: ${CLUSTER_ENDPOINT_IP}
-    nodeLabels:
-      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
-      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
-    # extensionServices:
-    #   - name: tailscale
-    #     environment:
-    #       - TS_AUTH_ONCE=true
-    #       - TS_AUTH_KEY=${TS_AUTHKEY}
-    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    nodeLabels: {}
+      # factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      # factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
     patches:
       - |-
         - op: add
@@ -59,15 +53,9 @@ nodes:
         dhcp: true
         vip:
           ip: ${CLUSTER_ENDPOINT_IP}
-    nodeLabels:
-      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
-      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
-    # extensionServices:
-    #   - name: tailscale
-    #     environment:
-    #       - TS_AUTH_ONCE=true
-    #       - TS_AUTH_KEY=${TS_AUTHKEY}
-    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    nodeLabels: {}
+      # factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      # factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
     patches:
       - |-
         - op: add
@@ -85,15 +73,9 @@ nodes:
         dhcp: true
         vip:
           ip: ${CLUSTER_ENDPOINT_IP}
-    nodeLabels:
-      factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
-      factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
-    # extensionServices:
-    #   - name: tailscale
-    #     environment:
-    #       - TS_AUTH_ONCE=true
-    #       - TS_AUTH_KEY=${TS_AUTHKEY}
-    #       - TS_EXTRA_ARGS=--login-server=${TS_SERVER}
+    nodeLabels: {}
+      # factory.talos.dev/schematic-prefix: 15872230a844d1e1bf7045b09af23b03
+      # factory.talos.dev/schematic-suffix: 4ac043eab1be3f4dc9e93469743eff02
     patches:
       - |-
         - op: add
@@ -108,9 +90,8 @@ controlPlane:
         - net.ifnames=0,
       systemExtensions:
         officialExtensions:
-          - siderolabs/amdgpu-firmware
+          - siderolabs/amdgpu
           - siderolabs/amd-ucode
-          # - siderolabs/tailscale
   patches:
     # Configure containerd
     - |-

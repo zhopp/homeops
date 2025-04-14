@@ -5,7 +5,7 @@ creation_rules:
     key_groups:
       - age:
         - age1r95vyqhek2s0596qngem77wqxl7cc3y9v4c5rjwsenvesmx9v30s8cz5t8
-  - path_regex: .*\.sops\.yaml
+  - path_regex: .*\.sops\.ya?ml
     key_groups:
       - age:
         - age1r95vyqhek2s0596qngem77wqxl7cc3y9v4c5rjwsenvesmx9v30s8cz5t8

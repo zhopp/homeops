@@ -1,4 +1,15 @@
-# Welcome to my K8s Home Lab
+# welcome to zhopp's homeops
+
+This repo is for my homelab, to practice all things kubenetes.
+
+## WIP ##
+
+*Updating to use Taskfile for easier configuration, instructions may be out of date*
+
+TODO:
+
+* Add additional tasks to taskfile, validate tasks
+* Update SOPS to use GCP KMS instead of age key. Create task for creation and usage of age key as an alternative.
 
 ## Installation/Configuration Instructions
 ### Prequisites
@@ -17,17 +28,31 @@ You also need sops to be configured with your preferred encryption tool (age, km
 
 #### Example install
 ```sh
-     brew install sops talhelper siderolabs/talos/talosctl kustomize kubectl helm
+brew install sops direnv talhelper siderolabs/talos/talosctl kustomize kubectl helm go-task/tap/go-task
 ```
+
+### Installation using Taskfiles
+
+This section is a WIP. We will automate the creation, bootstrapping, and managing a the Talos cluster and related actions using [taskfiles](https://taskfile.dev/)
+
+We will have a root-level `taskfile` that will include sub taskfiles so it's easier to manage. It will set global settings (if desired).
+
+The bellow will outline the steps to deploy and boostrap a cluster from bare-metal:
+
+* run `task talos:initial-install`
+* This generates the cluster secret, generates the config for the cluster, then applys the config
+
+TODO: Gen the kubeconfig
+
 
 ### SOPS using age
 
 ```sh
-     mkdir -p ~/.config/sops/age
-     age-keygen -o ~/.config/sops/age/keys.txt
+mkdir -p ~/.config/sops/age
+age-keygen -o ~/.config/sops/age/keys.txt
 ```
 
-Ensure `direnv allow` has been ran in the root repo directory, and ensure `export SOPS_AGE_RECIPIENTS="$HOME/.config/sops/age/keys.txt"` is in your `.envrc` file in the root of the repo.
+Ensure `direnv allow` has been ran in the root repo directory, and ensure `export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"` is in your `.envrc` file in the root of the repo.
 
 Configure your `.sops.yaml` with your age public key as such:
 
@@ -54,16 +79,6 @@ If these envs are secret, ensure that they are encrypted via SOPS:
 touch talenv.sops.yaml
 sops -e -i talenv.sops.yaml
 ```
-
-Make sure direnv is installed, and that you run a direnv allow to enable the env vars to be loaded when entering the directory in your shell.
-
-## WIP ##
-
-*Updating to use Taskfile for easier configuration, instructions may be out of date*
-TODO:
-
-GCP KMS for sops
-Add additional tasks to taskfile, validate tasks
 
 ### Create Talos Secrets
 
