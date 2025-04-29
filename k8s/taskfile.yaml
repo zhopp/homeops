@@ -5,6 +5,7 @@ version: "3"
 includes:
   bootstrap: .taskfiles/bootstrap
   talos: .taskfiles/talos
+  utils: .taskfiles/utils
 
 tasks:
   default:

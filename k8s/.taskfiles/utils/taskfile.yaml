@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  create-age-key:
+    desc: Generate age key for use with SOPS
+    env:
+      AGE_DIR: '{{.SOPS_AGE_DIR}}'
+      KEY_FILE: '{{.SOPS_AGE_KEY_FILE}}'
+    preconditions:
+      - which test age-keygen
+      - which test mkdir
+      - sh: test ! -f $KEY_FILE
+        msg: AGE key file already exists!
+    cmds:
+      - mkdir -p $AGE_DIR
+      - age-keygen -o $KEY_FILE
+      - echo "age key created at $KEY_FILE"

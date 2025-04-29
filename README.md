@@ -12,24 +12,13 @@ TODO:
 * Update SOPS to use GCP KMS instead of age key. Create task for creation and usage of age key as an alternative.
 
 ## Installation/Configuration Instructions
-### Prequisites
+### Dependencies
 
-You will need the following tools installed:
-  - sops
-  - direnv
-  - talhelper
-  - talosctl
-  - kubectl
-  - kustomize
-  - helm
-  - task
+This project's dependencies are handled via [nix flakes](https://wiki.nixos.org/wiki/Flakes).
 
-You also need sops to be configured with your preferred encryption tool (age, kms, etc).
+In the root of the repo, run a `nix develop`. You may need to run a `direnv allow` in the directory, but after that, when you navigate into the directory your development environment will load.
 
-#### Example install
-```sh
-brew install sops direnv talhelper siderolabs/talos/talosctl kustomize kubectl helm go-task/tap/go-task
-```
+The nix development environment will use the packages and versions defined in the project flake first (will put them first in your $PATH), but you will still retain access to your global packages.
 
 ### Installation using Taskfiles
 
@@ -47,12 +36,7 @@ TODO: Gen the kubeconfig
 
 ### SOPS using age
 
-```sh
-mkdir -p ~/.config/sops/age
-age-keygen -o ~/.config/sops/age/keys.txt
-```
-
-Ensure `direnv allow` has been ran in the root repo directory, and ensure `export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"` is in your `.envrc` file in the root of the repo.
+Run the age key creation taskfile: `task utils:set-envs`. 
 
 Configure your `.sops.yaml` with your age public key as such:
 

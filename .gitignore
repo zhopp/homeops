@@ -1,4 +1,5 @@
-.direnv/*
+.direnv/
+.age/
 talosconfig
 kubeconfig
-k8s/talos/clusterconfig
+clusterconfig

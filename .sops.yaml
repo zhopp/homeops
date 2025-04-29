@@ -4,8 +4,8 @@ creation_rules:
     encrypted_regex: "^(data|stringData)$"
     key_groups:
       - age:
-        - age1r95vyqhek2s0596qngem77wqxl7cc3y9v4c5rjwsenvesmx9v30s8cz5t8
+        - age188ehznumr5f8l5x5a3hvs2kcxd328ud0rxz7ctrtxtje28z3ec8s9ftzgu
   - path_regex: .*\.sops\.ya?ml
     key_groups:
       - age:
-        - age1r95vyqhek2s0596qngem77wqxl7cc3y9v4c5rjwsenvesmx9v30s8cz5t8
+        - age188ehznumr5f8l5x5a3hvs2kcxd328ud0rxz7ctrtxtje28z3ec8s9ftzgu
