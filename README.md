@@ -36,7 +36,7 @@ TODO: Gen the kubeconfig
 
 ### SOPS using age
 
-Run the age key creation taskfile: `task utils:set-envs`. 
+Run the age key creation taskfile: `task utils:create-age-key`. 
 
 Configure your `.sops.yaml` with your age public key as such:
 
