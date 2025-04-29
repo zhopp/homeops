@@ -1,5 +1,6 @@
 .direnv/
 .age/
+*.iso
 talosconfig
 kubeconfig
 clusterconfig

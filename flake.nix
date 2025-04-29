@@ -26,6 +26,10 @@
           kustomize
           go-task
           age
+          yq
+          jq
+          curl
+          wget
         ];
 
       in

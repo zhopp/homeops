@@ -7,6 +7,7 @@ env:
   TALCONFIG_FILE: '{{ .CLUSTER_DIR }}/talos/talconfig.yaml'
   TAL_OUT_DIR: '{{ .CLUSTER_DIR }}/talos/clusterconfig'
   TALENV_FILE: '{{ .CLUSTER_DIR }}/talos/talenv.yaml'
+  DOWNLOAD_SCRIPT: '{{ .CLUSTER_DIR }}/talos/download.sh'
 
 tasks:
   generate-initial-configs:
@@ -15,6 +16,15 @@ tasks:
       - task: _generate-secrets
     cmds:
       - task talos:generate-config
+
+  download-iso:
+    desc: Downloads ISO based on the specific schematic defined in talconfig.yaml
+    preconditions:
+      - which test wget talhelper
+      - test -f {{ .TALCONFIG_FILE }}
+    cmds:
+      - chmod +x {{ .DOWNLOAD_SCRIPT }}
+      - bash {{ .DOWNLOAD_SCRIPT }}
 
   apply-configs:
     desc: Applies generated configs to the bare-metal nodes

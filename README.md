@@ -9,7 +9,8 @@ This repo is for my homelab, to practice all things kubenetes.
 TODO:
 
 * Add additional tasks to taskfile, validate tasks
-* Update SOPS to use GCP KMS instead of age key. Create task for creation and usage of age key as an alternative.
+* Document way to install Talos to bare metal nodes using PXE
+* Make ISO download script more dynamic to allow user defined chipset
 
 ## Installation/Configuration Instructions
 ### Dependencies
@@ -28,8 +29,12 @@ We will have a root-level `taskfile` that will include sub taskfiles so it's eas
 
 The bellow will outline the steps to deploy and boostrap a cluster from bare-metal:
 
-* run `task talos:generate-initial-configs`
+* Run `task talos:generate-initial-configs`
 * This generates the cluster secret, generates the config for the cluster, to prepare for the initial apply. Ensure you only run this once, or else you have the chance of breaking your cluster by generating a new cluster secret.
+
+* Run `task talos:download-iso`. This will download an ISO that you will use to create bootable media to use on your nodes to load Talos into maitenance mode.
+
+* Create bootable USB drive using the .iso downloaded above. We will use this later. There are many ways to do this, so pick your favorite.
 
 TODO: Gen the kubeconfig
 
