@@ -44,9 +44,9 @@
             export SOPS_AGE_DIR="$PROJECT_ROOT/.age"
             export SOPS_AGE_KEY_FILE="$PROJECT_ROOT/.age/keys.txt"
             export KUBECONFIG="$PROJECT_ROOT/k8s/kubeconfig"
-            export CLUSTER_DIR="$PROJECT_ROOT/k8s/"
-            export SOPS_CONFIG="$PROJECT_ROOT/sops.yaml"
-            export CLUSTER=$(basename $PROJECT_ROOT/k8s/)"
+            export CLUSTER_DIR="$PROJECT_ROOT/k8s"
+            export SOPS_CONFIG="$PROJECT_ROOT/.sops.yaml"
+            export CLUSTER="$(basename $PROJECT_ROOT/k8s/)"
           '';
         };
       }

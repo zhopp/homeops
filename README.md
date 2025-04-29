@@ -28,11 +28,10 @@ We will have a root-level `taskfile` that will include sub taskfiles so it's eas
 
 The bellow will outline the steps to deploy and boostrap a cluster from bare-metal:
 
-* run `task talos:initial-install`
-* This generates the cluster secret, generates the config for the cluster, then applys the config
+* run `task talos:generate-initial-configs`
+* This generates the cluster secret, generates the config for the cluster, to prepare for the initial apply. Ensure you only run this once, or else you have the chance of breaking your cluster by generating a new cluster secret.
 
 TODO: Gen the kubeconfig
-
 
 ### SOPS using age
 

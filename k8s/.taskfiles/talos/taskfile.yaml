@@ -9,12 +9,16 @@ env:
   TALENV_FILE: '{{ .CLUSTER_DIR }}/talos/talenv.yaml'
 
 tasks:
-  initial-install:
-    desc: Command when installing Talos on bare metal nodes for the first time
+  generate-initial-configs:
+    desc: Generates initial configurations needed to install Talos for the first time
     deps:
       - task: _generate-secrets
     cmds:
       - task talos:generate-config
+
+  apply-configs:
+    desc: Applies generated configs to the bare-metal nodes
+    cmds:
       - task talos:apply-config INSECURE="true"
       - task talos:generate-kubeconfig
 
