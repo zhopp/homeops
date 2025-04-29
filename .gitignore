@@ -1,3 +1,4 @@
+.direnv/*
 talosconfig
 kubeconfig
 k8s/talos/clusterconfig
