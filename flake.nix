@@ -25,6 +25,8 @@
           kubectl
           kustomize
           go-task
+          docker
+          colima
           age
           yq
           jq

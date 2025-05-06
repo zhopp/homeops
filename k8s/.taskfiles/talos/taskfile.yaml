@@ -7,7 +7,9 @@ env:
   TALCONFIG_FILE: '{{ .CLUSTER_DIR }}/talos/talconfig.yaml'
   TAL_OUT_DIR: '{{ .CLUSTER_DIR }}/talos/clusterconfig'
   TALENV_FILE: '{{ .CLUSTER_DIR }}/talos/talenv.yaml'
-  DOWNLOAD_SCRIPT: '{{ .CLUSTER_DIR }}/talos/download.sh'
+  DOWNLOAD_SCRIPT: '{{ .CLUSTER_DIR }}/.taskfiles/talos/download.sh'
+  MATCHBOX_CONFIG_SCRIPT: '{{ .CLUSTER_DIR }}/.taskfiles/talos/matchbox-config.sh'
+  DOCKER_COMPOSE_FILE: '{{ .CLUSTER_DIR }}/.taskfiles/talos/docker-compose.yaml'
 
 tasks:
   generate-initial-configs:
@@ -16,6 +18,20 @@ tasks:
       - task: _generate-secrets
     cmds:
       - task talos:generate-config
+
+  _configure-matchbox:
+    desc: Configures the docker compose file for the iPXE service
+    internal: true
+    cmds:
+      - chmod +x {{ .MATCHBOX_CONFIG_SCRIPT }}
+      - bash {{ .MATCHBOX_CONFIG_SCRIPT }}
+
+  start-pxe-server:
+    desc: Sets up a iPXE service on the local machine so that bare metal nodes can be imaged via iPXE
+    deps:
+      - task: _configure-matchbox
+    cmds: 
+      - echo "WILL ADD COMMANDS"
 
   download-iso:
     desc: Downloads ISO based on the specific schematic defined in talconfig.yaml
